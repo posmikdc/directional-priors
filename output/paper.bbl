@@ -1,0 +1,49 @@
+\begin{thebibliography}{6}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Guttorp and Lockhart(1988)]{guttorp1988}
+Peter Guttorp and Richard~A. Lockhart.
+\newblock Finding the location of a signal: A bayesian analysis.
+\newblock \emph{Journal of the American Statistical Association}, 83\penalty0 (402):\penalty0 322--330, 1988.
+\newblock ISSN 01621459, 1537274X.
+\newblock URL \url{http://www.jstor.org/stable/2288846}.
+
+\bibitem[Hastie and Stuetzle(1989)]{HastieStuetzle1989}
+Trevor Hastie and Werner Stuetzle.
+\newblock Principal curves.
+\newblock \emph{Journal of the American Statistical Association}, 84\penalty0 (406):\penalty0 502--516, 1989.
+\newblock ISSN 01621459, 1537274X.
+\newblock URL \url{http://www.jstor.org/stable/2289936}.
+
+\bibitem[Mardia and El-Atoum(1976)]{mardia1976}
+K.~V. Mardia and S.~A.~M. El-Atoum.
+\newblock Bayesian inference for the von mises-fisher distribution.
+\newblock \emph{Biometrika}, 63\penalty0 (1):\penalty0 203--206, 1976.
+\newblock ISSN 00063444.
+\newblock URL \url{http://www.jstor.org/stable/2335106}.
+
+\bibitem[Meilă and Zhang(2023)]{Meila2023}
+Marina Meilă and Hanyu Zhang.
+\newblock Manifold learning: what, how, and why, 2023.
+\newblock URL \url{https://arxiv.org/abs/2311.03757}.
+
+\bibitem[Meng and Eloyan(2021)]{Meng2021}
+Kun Meng and Ani Eloyan.
+\newblock Principal manifold estimation via model complexity selection.
+\newblock \emph{Journal of the Royal Statistical Society Series B: Statistical Methodology}, 83\penalty0 (2):\penalty0 369–394, March 2021.
+\newblock ISSN 1467-9868.
+\newblock \doi{10.1111/rssb.12416}.
+\newblock URL \url{http://dx.doi.org/10.1111/rssb.12416}.
+
+\bibitem[Tibshirani(1992)]{Tibshirani1992}
+Robert Tibshirani.
+\newblock Principal curves revisited.
+\newblock \emph{Statistics and Computing}, 2\penalty0 (4):\penalty0 183--190, 1992.
+\newblock \doi{10.1007/BF01889678}.
+\newblock URL \url{https://doi.org/10.1007/BF01889678}.
+
+\end{thebibliography}
