@@ -25,19 +25,17 @@ We encode local topological information through the concentration parameter (κ)
 - Regions with high curvature (significant bending) receive less weight in updates
 - Flatter regions with low curvature contribute more to posterior updates
 
-![Gaussian Curvature Types](fig/gaussian-curvature.png)
-
 ### 3. Manifold RD Estimator
 
 We extend the framework to causal inference by developing a Manifold Regression Discontinuity estimator:
 
-$$
+\[
 f_{\tau | \theta} = 
 \mathcal{VM}
 \left(
   \bar{\theta}^{t \geq t^*} - \bar{\theta}^{t < t^*}, \sigma^2 
 \right)
-$$
+\]
 
 Where the treatment effect is estimated as the difference between post-treatment and pre-treatment mean projection angles, with variance informed by the manifold geometry:
 
