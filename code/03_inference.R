@@ -1,6 +1,10 @@
 # ==============================================================================
 # Title: Bayesian Inference with Spherical Normal Distribution
+# Original Author: Daniel Posmik
+# E-Mail: daniel_posmik@brown.edu
 # ==============================================================================
+
+# Set-Up =======================================================================
 library(dplyr)
 library(tidyverse)
 library(circular)

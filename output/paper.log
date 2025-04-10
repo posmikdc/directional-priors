@@ -1,4 +1,4 @@
-This is LuaHBTeX, Version 1.18.0 (TeX Live 2024)  (format=lualatex 2024.12.16)  2 APR 2025 13:15
+This is LuaHBTeX, Version 1.18.0 (TeX Live 2024)  (format=lualatex 2024.12.16)  10 APR 2025 12:44
  restricted system commands enabled.
  file:line:error style messages enabled.
 **paper.tex
@@ -399,26 +399,26 @@ Inserting `l3color' in `luaotfload.parse_color'.
 ) (./paper.aux)
 \openout1 = paper.aux
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 19.
-LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 19.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 20.
+LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 20.
  (/usr/local/texlive/2024/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2023/04/13 v2.5m Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
  (/usr/local/texlive/2024/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count301
@@ -440,11 +440,11 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 28.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 29.
  (/usr/local/texlive/2024/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 28.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 29.
  (/usr/local/texlive/2024/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1{/usr/local/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
@@ -453,45 +453,51 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 <../fig/data-with-noise.png, id=19, 962.59625pt x 846.16125pt>
 File: ../fig/data-with-noise.png Graphic file (type png)
 <use ../fig/data-with-noise.png>
-Package luatex.def Info: ../fig/data-with-noise.png  used on input line 117.
+Package luatex.def Info: ../fig/data-with-noise.png  used on input line 118.
 (luatex.def)             Requested size: 325.215pt x 285.87051pt.
  [2] [3<../fig/data-with-noise.png>]
 <../fig/projections-from-origin.png, id=38, 933.4875pt x 817.0525pt>
 File: ../fig/projections-from-origin.png Graphic file (type png)
 <use ../fig/projections-from-origin.png>
-Package luatex.def Info: ../fig/projections-from-origin.png  used on input line 135.
+Package luatex.def Info: ../fig/projections-from-origin.png  used on input line 136.
 (luatex.def)             Requested size: 325.215pt x 284.65114pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
  [4<../fig/projections-from-origin.png>] [5]
-<../fig/gaussian-curvature.png, id=48, 441.65pt x 441.65pt>
+<../fig/gaussian-curvature.png, id=47, 441.65pt x 441.65pt>
 File: ../fig/gaussian-curvature.png Graphic file (type png)
 <use ../fig/gaussian-curvature.png>
-Package luatex.def Info: ../fig/gaussian-curvature.png  used on input line 187.
+Package luatex.def Info: ../fig/gaussian-curvature.png  used on input line 184.
 (luatex.def)             Requested size: 216.81pt x 216.80798pt.
- [6]
+ [6<../fig/gaussian-curvature.png>]
 <../fig/posterior-roseplot.png, id=53, 1005.7575pt x 677.53125pt>
 File: ../fig/posterior-roseplot.png Graphic file (type png)
 <use ../fig/posterior-roseplot.png>
-Package luatex.def Info: ../fig/posterior-roseplot.png  used on input line 212.
+Package luatex.def Info: ../fig/posterior-roseplot.png  used on input line 213.
 (luatex.def)             Requested size: 433.62pt x 292.10812pt.
- [7<../fig/gaussian-curvature.png>] [8<../fig/posterior-roseplot.png>] [9] [10] (./paper.bbl
-Underfull \hbox (badness 1057) in paragraph at lines 16--21
+ [7<../fig/posterior-roseplot.png>] [8] [9] [10]
+<../fig/rd-sim.png, id=68, 1269.74374pt x 570.13pt>
+File: ../fig/rd-sim.png Graphic file (type png)
+<use ../fig/rd-sim.png>
+Package luatex.def Info: ../fig/rd-sim.png  used on input line 359.
+(luatex.def)             Requested size: 433.62pt x 194.70288pt.
+
+Underfull \vbox (badness 3354) has occurred while \output is active []
+
+ [11<../fig/rd-sim.png>] [12] [13] (./paper.bbl
+Underfull \hbox (badness 1057) in paragraph at lines 17--22
 []\TU/lmr/m/n/10.95 Trevor Hastie and Werner Stuet-zle.  Prin-ci-pal curves.  \TU/lmr/m/it/10.95 Jour-nal of the Amer-i-can
  []
 
 
-Underfull \hbox (badness 1502) in paragraph at lines 23--28
+Underfull \hbox (badness 1502) in paragraph at lines 24--29
 []\TU/lmr/m/n/10.95 K. V. Mar-dia and S. A. M. El-Atoum.  Bayesian in-fer-ence for the von mises-
  []
 
 
-Underfull \hbox (badness 1789) in paragraph at lines 23--28
+Underfull \hbox (badness 1789) in paragraph at lines 24--29
 \TU/lmr/m/n/10.95 fisher dis-tri-bu-tion.  \TU/lmr/m/it/10.95 Biometrika\TU/lmr/m/n/10.95 , 63(1):203--206, 1976.  ISSN 00063444.  URL
  []
 
-) [11] (./paper.aux)
+) [14] (./paper.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
@@ -499,20 +505,20 @@ L3 programming layer <2024-02-20>
 )
 
 Here is how much of LuaTeX's memory you used:
- 15495 strings out of 476447
+ 15522 strings out of 476447
  100000,1977958 words of node,token memory allocated
- 646 words of node memory still in use:
-   6 hlist, 2 vlist, 2 rule, 10 glue, 4 kern, 1 glyph, 23 attribute, 59 glue_spec, 23 attribute_list, 2 write nodes
-   avail lists: 2:2714,3:1536,4:342,5:458,6:29,7:7761,8:55,9:388,10:16,11:629
- 37188 multiletter control sequences out of 65536+600000
- 78 fonts using 5392111 bytes
- 87i,8n,89p,1136b,982s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmmono10-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman10-italic.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman10-bold.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman9-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman8-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman12-bold.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman12-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman17-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman10-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmromancaps10-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmmib8.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/t
-exlive/2024/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on paper.pdf (11 pages, 1681163 bytes).
+ 637 words of node memory still in use:
+   6 hlist, 2 vlist, 2 rule, 7 glue, 4 kern, 1 glyph, 26 attribute, 59 glue_spec, 26 attribute_list, 2 write nodes
+   avail lists: 2:2704,3:1537,4:342,5:476,6:30,7:8869,8:70,9:523,10:15,11:686
+ 37212 multiletter control sequences out of 65536+600000
+ 71 fonts using 4957487 bytes
+ 87i,11n,89p,1489b,982s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmmono10-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman10-italic.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman10-bold.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman9-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman8-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman10-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman12-bold.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman12-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman17-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmromancaps10-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmmib8.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/te
+xlive/2024/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on paper.pdf (14 pages, 1923158 bytes).
 
-PDF statistics: 186 PDF objects out of 1000 (max. 8388607)
- 117 compressed objects within 2 object streams
+PDF statistics: 197 PDF objects out of 1000 (max. 8388607)
+ 123 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 131072)
  16 words of extra memory for PDF output out of 10000 (max. 100000000)
 

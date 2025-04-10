@@ -5,12 +5,13 @@
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[Guttorp and Lockhart(1988)]{guttorp1988}
-Peter Guttorp and Richard~A. Lockhart.
-\newblock Finding the location of a signal: A bayesian analysis.
-\newblock \emph{Journal of the American Statistical Association}, 83\penalty0 (402):\penalty0 322--330, 1988.
-\newblock ISSN 01621459, 1537274X.
-\newblock URL \url{http://www.jstor.org/stable/2288846}.
+\bibitem[Branson et~al.(2019)Branson, Rischard, Bornn, and Miratrix]{Branson2019}
+Zach Branson, Maxime Rischard, Luke Bornn, and Luke~W. Miratrix.
+\newblock A nonparametric bayesian methodology for regression discontinuity designs.
+\newblock \emph{Journal of Statistical Planning and Inference}, 202:\penalty0 14–30, September 2019.
+\newblock ISSN 0378-3758.
+\newblock \doi{10.1016/j.jspi.2019.01.003}.
+\newblock URL \url{http://dx.doi.org/10.1016/j.jspi.2019.01.003}.
 
 \bibitem[Hastie and Stuetzle(1989)]{HastieStuetzle1989}
 Trevor Hastie and Werner Stuetzle.
