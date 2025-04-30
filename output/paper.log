@@ -1,4 +1,4 @@
-This is LuaHBTeX, Version 1.18.0 (TeX Live 2024)  (format=lualatex 2024.12.16)  10 APR 2025 12:47
+This is LuaHBTeX, Version 1.18.0 (TeX Live 2024)  (format=lualatex 2024.12.16)  29 APR 2025 11:50
  restricted system commands enabled.
  file:line:error style messages enabled.
 **paper.tex
@@ -567,63 +567,65 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 31.
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1{/usr/local/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
-]
-<../fig/data-with-noise.png, id=81, 962.59625pt x 846.16125pt>
+] [2]
+<../fig/data-with-noise.png, id=101, 962.59625pt x 846.16125pt>
 File: ../fig/data-with-noise.png Graphic file (type png)
 <use ../fig/data-with-noise.png>
-Package luatex.def Info: ../fig/data-with-noise.png  used on input line 119.
+Package luatex.def Info: ../fig/data-with-noise.png  used on input line 121.
 (luatex.def)             Requested size: 325.215pt x 285.87051pt.
- [2] [3<../fig/data-with-noise.png>]
-<../fig/projections-from-origin.png, id=107, 933.4875pt x 817.0525pt>
+ [3<../fig/data-with-noise.png>]
+<../fig/projections-from-origin.png, id=111, 933.4875pt x 817.0525pt>
 File: ../fig/projections-from-origin.png Graphic file (type png)
 <use ../fig/projections-from-origin.png>
-Package luatex.def Info: ../fig/projections-from-origin.png  used on input line 137.
+Package luatex.def Info: ../fig/projections-from-origin.png  used on input line 139.
 (luatex.def)             Requested size: 325.215pt x 284.65114pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
  [4<../fig/projections-from-origin.png>] [5]
-<../fig/gaussian-curvature.png, id=119, 441.65pt x 441.65pt>
-File: ../fig/gaussian-curvature.png Graphic file (type png)
-<use ../fig/gaussian-curvature.png>
-Package luatex.def Info: ../fig/gaussian-curvature.png  used on input line 185.
-(luatex.def)             Requested size: 216.81pt x 216.80798pt.
- [6<../fig/gaussian-curvature.png>]
-<../fig/posterior-roseplot.png, id=131, 1005.7575pt x 677.53125pt>
+<../fig/posterior-roseplot.png, id=125, 1229.59375pt x 647.41875pt>
 File: ../fig/posterior-roseplot.png Graphic file (type png)
 <use ../fig/posterior-roseplot.png>
-Package luatex.def Info: ../fig/posterior-roseplot.png  used on input line 214.
-(luatex.def)             Requested size: 433.62pt x 292.10812pt.
- [7<../fig/posterior-roseplot.png>] [8] [9] [10]
-<../fig/rd-sim.png, id=166, 1269.74374pt x 570.13pt>
-File: ../fig/rd-sim.png Graphic file (type png)
-<use ../fig/rd-sim.png>
-Package luatex.def Info: ../fig/rd-sim.png  used on input line 360.
-(luatex.def)             Requested size: 433.62pt x 194.70288pt.
+Package luatex.def Info: ../fig/posterior-roseplot.png  used on input line 207.
+(luatex.def)             Requested size: 433.62pt x 228.31886pt.
 
-Underfull \vbox (badness 3354) has occurred while \output is active []
 
- [11<../fig/rd-sim.png>] [12] [13] (./paper.bbl) [14] (./paper.aux)
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[6] [7<../fig/posterior-roseplot.png>]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[8] [9] [10]
+<../fig/rd_sim.png, id=166, 867.24pt x 433.62pt>
+File: ../fig/rd_sim.png Graphic file (type png)
+<use ../fig/rd_sim.png>
+Package luatex.def Info: ../fig/rd_sim.png  used on input line 411.
+(luatex.def)             Requested size: 411.93767pt x 205.97163pt.
+ [11] [12<../fig/rd_sim.png>] [13] (./paper.bbl) [14] (./paper.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
  ***********
 Package rerunfilecheck Info: File `paper.out' has not changed.
-(rerunfilecheck)             Checksum: 7A202AFD514BCB91DAAD623895CBAFC8;1860.
+(rerunfilecheck)             Checksum: E3D16592F0E83529CC822CDC6CDBBF2C;2296.
 )
 
 Here is how much of LuaTeX's memory you used:
- 22840 strings out of 476447
+ 22828 strings out of 476447
  125027,1977958 words of node,token memory allocated
- 687 words of node memory still in use:
-   6 hlist, 2 vlist, 2 rule, 7 glue, 4 kern, 1 glyph, 30 attribute, 61 glue_spec, 30 attribute_list, 2 write, 4 pdf_action nodes
-   avail lists: 1:1,2:2746,3:2352,4:513,5:490,6:47,7:8964,8:70,9:556,10:15,11:697
- 44335 multiletter control sequences out of 65536+600000
+ 696 words of node memory still in use:
+   6 hlist, 2 vlist, 2 rule, 7 glue, 4 kern, 1 glyph, 35 attribute, 60 glue_spec, 35 attribute_list, 2 write, 3 pdf_action nodes
+   avail lists: 2:2756,3:2354,4:519,5:540,6:52,7:8886,8:73,9:806,10:15,11:749
+ 44327 multiletter control sequences out of 65536+600000
  71 fonts using 4957487 bytes
- 87i,11n,89p,1497b,995s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 87i,17n,89p,1494b,995s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmmono10-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman10-italic.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman10-bold.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman9-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman8-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman10-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman12-bold.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman12-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmroman17-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/opentype/public/lm/lmromancaps10-regular.otf></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmmib8.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/te
 xlive/2024/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on paper.pdf (14 pages, 1926886 bytes).
+Output written on paper.pdf (14 pages, 1964934 bytes).
 
-PDF statistics: 321 PDF objects out of 1000 (max. 8388607)
+PDF statistics: 318 PDF objects out of 1000 (max. 8388607)
  246 compressed objects within 3 object streams
- 44 named destinations out of 1000 (max. 131072)
- 104 words of extra memory for PDF output out of 10000 (max. 100000000)
+ 43 named destinations out of 1000 (max. 131072)
+ 112 words of extra memory for PDF output out of 10000 (max. 100000000)
 

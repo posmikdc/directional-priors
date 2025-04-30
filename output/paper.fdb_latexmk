@@ -1,18 +1,17 @@
 # Fdb version 4
-["bibtex paper"] 1744303676.51288 "paper.aux" "paper.bbl" "paper" 1744303679.40802 0
+["bibtex paper"] 1745941832.29811 "paper.aux" "paper.bbl" "paper" 1745941835.71731 0
   "./references.bib" 1744220742.08212 7808 e7818cfb6014226d9b3c94251e039d4d ""
   "/usr/local/texlive/2024/texmf-dist/bibtex/bst/natbib/plainnat.bst" 1233624470 26816 ffe5423d2019860bad9f54bc402fac15 ""
-  "paper.aux" 1744303678.99075 5018 7e3ae61b0570df7478d2688578ddcde9 "lualatex"
+  "paper.aux" 1745941835.25277 4689 e6bbe18b9d015030a3404a25494871e7 "lualatex"
   (generated)
   "paper.bbl"
   "paper.blg"
   (rewritten before read)
-["lualatex"] 1744303676.604 "paper.tex" "paper.pdf" "paper" 1744303679.40818 0
+["lualatex"] 1745941832.41929 "paper.tex" "paper.pdf" "paper" 1745941835.71745 0
   "../fig/data-with-noise.png" 1743188292.39996 803562 e525e026c5c02986794401fccb2697d5 ""
-  "../fig/gaussian-curvature.png" 1743185658.99148 142703 0dfd37e8470376b11392adf685262174 ""
-  "../fig/posterior-roseplot.png" 1743458839.36565 303986 2f96d405f53c8e64a06e7c56a2c6d1fd ""
+  "../fig/posterior-roseplot.png" 1744999689.83457 385597 9f535c21670f216c1639127a506bffe8 ""
   "../fig/projections-from-origin.png" 1743188230.4699 797885 5230952f1c6591f9395cdb4eb34965be ""
-  "../fig/rd-sim.png" 1744303209.51768 381071 a3edb4da54d05560a7caf46f9aab73f1 ""
+  "../fig/rd_sim.png" 1744998487.28297 283177 c2f43b22ab377c160f86f6e459550935 ""
   "/Users/posmikdc/Library/texlive/2024/texmf-var/luatex-cache/generic/fonts/otl/lmmono10-regular.luc" 1739470266.46908 81837 ac5b1b311ade3065c5dda4c0bbd0f8cb ""
   "/Users/posmikdc/Library/texlive/2024/texmf-var/luatex-cache/generic/fonts/otl/lmroman10-bold.luc" 1739470266.25575 128410 d0a7d6c5b84cb323c732980fd1a15945 ""
   "/Users/posmikdc/Library/texlive/2024/texmf-var/luatex-cache/generic/fonts/otl/lmroman10-italic.luc" 1739470273.24749 136312 0e3e64866d362ca6507213d4e45d4d17 ""
@@ -264,11 +263,11 @@
   "/usr/local/texlive/2024/texmf-dist/tex/luatex/luaotfload/luaotfload.lua" 1709155629 13565 50482dad4c221a79dbdbb982122baf8c ""
   "/usr/local/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1734379850.73838 5467645 128b85b7cde5f5edc5cb7f1dd7ff8736 ""
   "/usr/local/texlive/2024/texmf-var/web2c/luahbtex/lualatex.fmt" 1734379847 12257233 987b3292eea6878e6bc387be24e18ea6 ""
-  "paper.aux" 1744303678.99075 5018 7e3ae61b0570df7478d2688578ddcde9 "lualatex"
-  "paper.bbl" 1744303676.60074 2239 4d6361442243ff085c877bd1bf183e6a "bibtex paper"
-  "paper.out" 1744303678.99375 1860 7a202afd514bcb91daad623895cbafc8 "lualatex"
+  "paper.aux" 1745941835.25277 4689 e6bbe18b9d015030a3404a25494871e7 "lualatex"
+  "paper.bbl" 1745941832.41572 2239 4d6361442243ff085c877bd1bf183e6a "bibtex paper"
+  "paper.out" 1745941835.25392 2296 e3d16592f0e83529cc822cdc6cdbbf2c "lualatex"
   "paper.sty" 1743010379.46592 12804 d1e39c741aff082df602506bf46a8493 ""
-  "paper.tex" 1744303671.70162 33006 303a8dbbe907862f1024804d4906627d ""
+  "paper.tex" 1745863992.13548 37944 1d2e5a9dd15684b0989d68bdf3dffbbf ""
   (generated)
   "paper.aux"
   "paper.log"

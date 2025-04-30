@@ -248,3 +248,5 @@ combined_plot <- plotly::subplot(plot1, plot2, nrows = 1, shareY = TRUE) %>%
 
 # Display the combined plot
 combined_plot
+
+ggsave("fig/posterior-roseplot.png", combined_plot, width = 12, height = 6, dpi = 300)

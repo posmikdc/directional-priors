@@ -12,7 +12,7 @@
 
 \ShortHeadings{
 %% short title here
-Directional Priors in Manifolds
+Toward a Manifold RD Estimator
 }{
 % last name
 Posmik}
@@ -20,7 +20,7 @@ Posmik}
 
 \begin{document}
 
-\title{	Directional Priors in Manifold Learning: A Causal Perspective \\
+\title{Bayesian Topological Weights in Causal Inference -- \\ Toward a Manifold RD Estimator \\
 \vspace{.1in}
 PHP2530			
 }
@@ -32,11 +32,13 @@ PHP2530
 
 \section{Introduction} \label{sc:intro}
 
+\textcolor{red}{There's a parellel to random effects; Call them Bayesian topo weights; Algorithm: while $i < N$, 1) Draw $\theta_i$ from posterior, 2) get $kappa_i$ at that $\theta_i$, 3) Calculate weight}
+
 Manifold learning is dimensionality reduction technique that has proven useful in settings where data are high-dimensional and non-linear. Often, manifold learning algorithms are used when the topological structure of the data are to be preserved in a statistical learning task\footnote{For an introduction, see \citet{Meila2023}}. Within the manifold learning framework, data are assumed to live on a lower dimensional manifold and are corrupted by high-dimensional noise. We say that $D$-dimensional data can be embedded in $d$-dimensional manifold where $d \leq D$ but generally $d \ll D$ .  
 
 \begin{figure}[h!]
   \begin{center}
-    \begin{tikzpicture}[scale=0.85]
+    \begin{tikzpicture}[scale=0.75]
       % Define styles
       \tikzset{
         manifold/.style={blue, thick, fill=blue!10},
@@ -178,16 +180,7 @@ The Gaussian curvature of a surface can be defined as the product of the princip
 
 $$K = k_1 \cdot k_2$$
 
-where $k_1$ and $k_2$ are the principal curvatures at a point on the surface. For a sphere of radius $R$, due to perfect symmetry, both principal curvatures equal $\frac{1}{R}$, giving a Gaussian curvature of $K = \frac{1}{R^2}$. For a unit sphere, the Gaussian curvature is $K = 1$, an intrinsic property related to the total curvature integrated over the entire sphere equaling $4\pi$ by the Gauss-Bonnet theorem.
-
-\begin{figure}[h!]
-  \begin{center}
-    \includegraphics[width=0.5\textwidth]{../fig/gaussian-curvature.png}
-  \end{center}
-  \caption{From left to right: a surface of negative Gaussian curvature (hyperboloid), a surface of zero Gaussian curvature (cylinder), and a surface of positive Gaussian curvature (sphere).}\label{fig:gaussian-curvature}
-\end{figure}
-
-This curvature-based approach provides a meaningful way to weight observations based on their location in the manifold's topological structure. Areas with high curvature (significant bending of the manifold) will contribute less to updating our beliefs than areas with lower curvature (flatter regions), which aligns with our geometric intuition about confidence in projections.
+where $k_1$ and $k_2$ are the principal curvatures at a point on the surface. For a sphere of radius $R$, due to perfect symmetry, both principal curvatures equal $\frac{1}{R}$, giving a Gaussian curvature of $K = \frac{1}{R^2}$. For a unit sphere, the Gaussian curvature is $K = 1$, an intrinsic property related to the total curvature integrated over the entire sphere equaling $4\pi$ by the Gauss-Bonnet theorem. This curvature-based approach provides a meaningful way to weight observations based on their location in the manifold's topological structure. Areas with high curvature (significant bending of the manifold) will contribute less to updating our beliefs than areas with lower curvature (flatter regions), which aligns with our geometric intuition about confidence in projections.
 
 \subsection{Conjugacy Results}\label{sc:conjugacy}
 
@@ -239,25 +232,15 @@ The posterior mean naturally represents a weighted compromise between prior and 
 
 \section{A Causal Extension -- Toward a Manifold RD Estimator}\label{sc:causal}
 
-\textcolor{red}{Make it crystal clear that the posterior variance is the Bayesian thing here!!}
+Our goal is to propose an estimator that exploits topological information from pre- and post-treatment manifolds. Before we begin, recall the definition of a regression discontinuity (RD) estimator when treatment is administered at time $t^*$. 
 
-An interesting application of directional priors is a causal setting where we seek to estimate treatment effects after some treatment has been administered. A popular class of estimators for comparing changes in outcomes of interest close to a treatment cut-off are regression discontinuity (RD) estimators. RD estimators exploit the the balance between units close to the treatment cut-off, assuming that treatment does not depend on any unit characteristics. Recovering causal effects in RD estimators hinges on the assumption that in terms of unit characteristics, treatment assignment is quasi-random very close to the cut-off. Popular examples in literature include measuring the effect of advanced coursework on students above some cutoff, comparing their outcomes to students just below said cutoff. 
+\[
+  \tau(t^*) = \lim_{\delta \rightarrow 0} \mathbb{E}[\theta | Z = 1, t = t^* + \delta] - \lim_{\delta \rightarrow 0} \mathbb{E}[\theta | Z = 0, t = t^* - \delta] 
+\]
 
-In the principal manifold learning setup, directional priors offer a promising Bayesian approach to causal inference. For simplicity, assume that treatment is administered at time point $t^*$. Then, all units in $(-\infty, t^*)$ are pre-treatment units, and all units in $[t^*, \infty)$ are post-treatment units. In a canonical RD setting, under a set of identification assumptions, we can recover an average treatment by considering values of $Y_i$ immediately to the right (say $Y_{it} |_{t^* + \delta}$) and left ($Y_{it} |_{t^* - \delta}$) of the cutoff. This yields the causal estimate  
+As it relates to the principal manifolds framework, after treatment happens at $t=t^*$, we can fit the post-treatment manifold $\mathcal{M}_d^{t \geq t^*}$. In the spirit of RD-based causal estimation, we want to emphasize that $\mathcal{M}_d^{t \geq t^*}$ is \textit{not} fit iteratively for each post-treatment unit, i.e. we do not obtain the post-treatment unit by combining the post-treatment units with pre-treatment units. Instead, we fit two manifolds with disjoint pre- and post-treatment data.\footnote{That being said, it may be interesting to let the choice of manifold (e.g., the shape, highest order, etc.) from the pre-treatment case inform the post-treatment case, effectively borrowing prior topological information on a more global level. This is a really interesting direction in the Bayesian paradigm and touches on the notion of persistent homology. Although this discussion goes beyond the scope of this paper, it highlights how nuanced various levels/ sources of topological information can be.} Namely, we observe the outcomes of $m$ additional units in the immediate post-treatment period, and fit $\mathcal{M}_d^{t \geq t^*}$ with data $\{\theta_{t}\}_{i=n+1}^{m}|_{t \geq t^*}$. The mean projection angle of $\mathcal{M}_d^{t \geq t^*}$, $\bar{\theta}^{t \geq t^*}$, is the post-treatment mean projection angle. It reflects the directionality under treatment. The following figure presents this admittedly complex idea visually. 
 
-$$
-\hat{\tau}= \bar{Y}|_{t = t^* + \delta} - \bar{Y}|_{t = t^* - \delta} 
-$$
-
-The above estimator is commonly measured in the Local Linear Regression (LLR) framework, i.e. measure the ATE as the difference in post- and pre-treatment means, given that they are sufficiently close to the treatment cutoff $t^*$. \citet{Branson2019} considers a Bayesian RD setting where a Gaussian process prior is placed on the pre- and post-treatment mean response functions. We believe this work, although not directly related to the use of topological information in causal inference, encapsulates the desire for more flexible, data-driven, and principled causal inference through Bayesian paradigms.   
-
-\subsection{Intuition}
-
-In a principal manifolds framework, we can also exploit this notion of quasi-randomness to recover causal effects. Specifically, we propose the estimation of causal treatment effects using the posterior density of projection angles with empirical prior variances encoding the local topological structure of pre-treatment manifolds. For this procedure, suppose we use the set of pre-treatment units $\{Y_{it}\}_{i=1}^n|_{t < t^*}$ to fit the $d$-dimensional manifold $\mathcal{M}_d^{t < t^*}$. As we have shown in Section~\ref{sc:directional-priors}, a polar reparameterization allows us to recover the projection angles $\{\theta_i\}$ as well as their mean which we shall denote as $\bar{\theta}^{t < t^*}$. This mean pre-treatment projection angle $\bar{\theta}^{t < t^*}$ has a curvature which we will denote as $\kappa^{t<t^*}$. Together, the mean pre-treatment projection angle and curvature sufficiently parameterize the first two moments of the pre-treatment outcome of interest. 
-
-After treatment happens at $t=t^*$, we can fit the post-treatment manifold $\mathcal{M}_d^{t \geq t^*}$. In the spirit of LLR-based causal estimation, we want to emphasize that $\mathcal{M}_d^{t \geq t^*}$ is *not* fit iteratively for each post-treatment unit, i.e. we do not obtain the post-treatment unit by combining the post-treatment units with pre-treatment units. Instead, our pre- and post-treatment manifolds are topological analogues to $\bar{Y}|_{t = t^* - \delta}$ and $\bar{Y}|_{t = t^* + \delta}$, respectively. That being said, it may be interesting to let the choice of manifold (e.g., the shape, highest order, etc.) from the pre-treatment case inform the post-treatment case, effectively borrowing prior topological information on a more global level. \footnote{This is a really interesting direction in the Bayesian paradigm and touches on the notion of persistent homology. Although this discussion goes beyond the scope of this paper, it highlights how nuanced various levels/ sources of topological information can be.} Now, suppose that we observe the outcomes of $m$ additional units in the immediate post-treatment period, then the data $\{Y_{it}\}_{i=n+1}^{m}|_{t \geq t^*}$ allows us to fit the manifold $\mathcal{M}_d^{t \geq t^*}$. The mean projection angle of $\mathcal{M}_d^{t \geq t^*}$, i.e. $\bar{\theta}^{t \geq t^*}$ will update from $\bar{\theta}^{t < t^*}$, and yield a new posterior estimate for the projection angle.  
-
-\begin{figure}
+\begin{figure}[h!]
   \begin{center}
 \begin{tikzpicture}[scale=0.9]
     % Define colors
@@ -329,59 +312,128 @@ After treatment happens at $t=t^*$, we can fit the post-treatment manifold $\mat
   \caption{The Manifold RD Estimator}\label{fig:manifold-rd}
 \end{figure}
 
-\subsection{The Estimator}
+\subsection{The Manifold RD Estimator}
 
-Combining our insights from RD estimators with the conjugacy results of Section~\ref{sc:conjugacy}, we propose a Bayesian manifold RD estimator in its simplest form. After having the pre- and post-treatment manifold, consider subtracting the pre-treatment distribution of angles from the post-treatment distribution. This yields a RD estimator of the form: 
+It is common to estimate the causal effect, write $\hat{\tau}(t^*)$, using a weighting approach \textcolor{red}{cite these bad bois}. Units that are located closer to $t^*$ are weighted more, while units that are located further away are weighted less. This makes sense in the context of the identification assumption underlying the RD estimator, i.e. units close to the cutoff only differ in treatment assignment. Thus, treatment is considered quasi-random. 
 
-$$
-f_{\tau | \theta} = 
-\mathcal{VM}
-\left(
-  \bar{\theta}^{t \geq t^*} - \bar{\theta}^{t < t^*}, \sigma^2 
-\right)
-$$ 
+Our crux is to translate this weighting scheme into a topological setting. Intuitively, we want to achieve the following: For each additional unit we observe after the treatment has been administered, evaluate whether this observation is \textit{topologically similar} to our pre-treatment mean. If it is, we want to assign a larger weight to it. If it is not, we want to assign less weight to it. Remember that we formalized the notion of topological similarity using the curvature $\kappa|\theta_i$, i.e. for unit $i$, the curvature at the projection angle encodes its topological neighborhood. Thus, if some unit is embedded close to what we would expect from our pre-treatment data, we want to assign a lot of weight to it since it is topologically similar. 
 
-where 
+This thought process yields the following weighting approach. Let $\hat{\tau}(t^*)$ be the weighted treatment effect estimator, 
 
 \[
-  \sigma^2 = \sqrt{\left[\kappa^{t < t^*}\cos(\bar{\theta}^{t < t^*}) + \textcolor{darkorange}{\kappa^{t \geq t^*}\cos(\bar{\theta}^{t \geq t^*})}\right]^2 
+  \hat{\tau}(t^*) = \sum_{j=n+1}^{m} \frac{w_j \cdot \theta_j^{t \geq t^*}}{m - n} - \sum_{i=1}^{n} \frac{w_i \cdot \theta_i^{t < t^*}}{n}
+\]
+
+For all pretreatment observations, $i \in \{1, \cdots, n\}$, the weight $w_i$ simply quantifies the difference of unit $i$'s projection angle $\theta_i$ from the mean pre-treatment projection angle $\bar{\theta}^{t < t^*}$. This is analogous to the canonical weighting scheme in literature. When we enter the post-treatment period, with observations $j \in \{n+1, \cdots, m\}$, the weight $w_j$ is drawn from a posterior with prior around the pre-treatment projection angle. Its likelihood is updated for each additional point in the post-treatment period. Thus, we formally define our weight function as follows: 
+
+$$
+w_i(\kappa|\theta) = 
+  \frac{1}{\|\kappa_i^{t<t^*}|\textcolor{darkorange}{\{\theta_i\}_{i=1}^{t}} - \kappa^{t<t^*}|\bar{\theta}^{t<t^*}\|}
+$$
+
+Here, $\kappa^{t<t^*}|\theta_i$ denotes the Gaussian curvature on the pre-treatment manifold, evaluated at $\theta_i$. Meanwhile, $\kappa^{t<t^*}|\bar{\theta}^{t<t^*}$ denotes the Gaussian curvature on the pre-treatment manifold, evaluated at the mean pre-treatment projection angle. In the post-treatment period, this quantity is always non-random. 
+
+Before we proceed, we want to emphasize the difference in interpretation of ${\{\theta_i\}_{i=1}^t}$ from the pre-treatment to the post-treatment case. In the pre-treatment case, ${\{\theta_i\}_{i=1}^t}$ represents the prior distribution using pre-treatment observations. In the post-treatment case, ${\{\theta_i\}_{i=1}^t}$ becomes a posterior distribution, where the prior distribution is updated with each post-treatment observation in $j \in \{n+1, \cdots, t\}$. This implies that we can express our data vector as a disjoint union of sets:
+
+$$
+\textcolor{darkorange}{\{\theta_i\}_{i=1}^t} = 
+\begin{cases}
+\{\theta_i\}_{i=1}^{t}, & \text{if } t < t^* \\ 
+\{\theta_i\}_{i=1}^{n} \cup \{\theta_j\}_{j=n+1}^{t}, & \text{if } t \geq t^*
+\end{cases}
+$$
+
+In the pre-treatment case, we have a canonical von Mises distribution. In the post-treatment case, we make use of our conjugacy result from Section~\ref{sc:directional-priors}. Naturally, in a causal setting, we will focus on the case $t \geq t^*$, i.e. when post-treatment data is available. This yields our hierarchical manifold RD estimator: 
+
+\[
+  \begin{aligned}
+    \tau | &w_i \\
+           &w_i = w_i(\kappa^{t<t^*}|\theta_i) \\
+           &\theta_i \sim \mathcal{VM}(\mu, \sigma^2)
+\end{aligned}
+\]
+
+where
+
+\[
+\begin{aligned}
+  &\mu =  \frac{1/\kappa^{t<t^*}}{1/\kappa^{t<t^*} + 1/\kappa^{t \geq t^*}} \cdot \bar{\theta}^{t < t^*} + \frac{1/\kappa^{t \geq t^*}}{1/\kappa^{t < t^*} + 1/\kappa^{t \geq t^*}} \cdot \bar{\theta}^{t \geq t^*} \\
+  &\sigma^2 = \sqrt{\left[\kappa^{t < t^*}\cos(\bar{\theta}^{t < t^*}) + \textcolor{darkorange}{\kappa^{t \geq t^*}\cos(\bar{\theta}^{t \geq t^*})}\right]^2 
   + 
-\left[\kappa^{t < t^*}\sin(\bar{\theta}^{t < t^*}) + \textcolor{darkorange}{\kappa^{t \geq t^*}\sin(\bar{\theta}^{t \geq t^*})}\right]^2}
+\left[\kappa^{t < t^*}\sin(\bar{\theta}^{t < t^*}) + \textcolor{darkorange}{\kappa^{t \geq t^*}\sin(\bar{\theta}^{t \geq t^*})}\right]^2} 
+\end{aligned}
 \]
 
 by the conjugacy results of Section~\ref{sc:conjugacy}. 
 
-Here, we estimate the Average Treatment Effect (ATE) as the difference between the mean projection angles of the post- and pre-treatment manifold, respectively. As illustrated in Figure~\ref{fig:manifold-rd}, this difference captures the directional shift in data geometry following treatment intervention. The posterior variance, expressed as the Euclidean norm of the difference between weighted directional vectors, quantifies our uncertainty about this effect. Intuitively, a larger norm indicates greater topological dissimilarity between pre- and post-treatment manifolds, suggesting a more substantial causal impact.
+We want to emphasize that the Bayesian inference procedure is not the causal estimator $\hat{\tau}$ directly. Rather the weights as a function of $\kappa$ (evaluated at $\theta$). Posterior inference through the above mechanism is possible as soon as we observe at least one post-treatment unit. An immediate advantage of this estimation procedure is that we can update our estimates readily for each new observation. 
 
-To illustrate this, let us recycle the toy example from Section~\ref{sc:conjugacy}. Suppose we have a post-treatment mean projection angle, $\bar{\theta}^{t \geq t^*} = \pi$ and a pre-treatment mean projection angle, $\bar{\theta}^{t < t^*} = \pi/2$. We consider both of these manifolds to be circles, but the post-treatment manifold has radius $2$. Thus, the manifold we have fit grows from a unit circle (radius = $1$) to a post-treatment circle with radius $2$. This means that while the pre-treatment Gaussian curvature stays 1, i.e. $\kappa^{t < t^*} = 1$, our post-treatment curvature is now $\kappa^{t \geq t^*} = \frac{1}{R^2} = \frac{1}{4}$. We simulate 500 draws and observe the following results: 
+The manifold RD estimator is similar to weighted RD estimators in literature. A common and intuitive estimation procedure for RD estimators is the Local Linear Regression (LLR) framework, i.e. measure the LATE as the difference in post- and pre-treatment means, given that they are sufficiently close to the treatment cutoff $t^*$. \citet{Branson2019} considers a Bayesian RD setting where a Gaussian process prior is placed on the pre- and post-treatment mean response functions. We believe this work, although not directly related to the use of topological information in causal inference, encapsulates the desire for more flexible, data-driven, and principled causal inference through Bayesian paradigms.   
+
+
+\subsection{Estimator Properties and Simulation}
+
+An analytical derivation of our estimator's properties is simplified greatly by our conjugacy results. Naturally, outside of the von Mises parameterization, estimator properties can be determined by posterior sampling and numerical methods. To provide further insight into the estimator, we will analytically derive its first two moments and provide a brief simulation. 
+
+The expectation of $\hat{\tau}(t^*)$, where we let $w_{i,j} = w_{i,j}(\kappa|\mu)$ denote the respective weights, is the following:
+\[
+  \begin{aligned}
+    \mathbb{E}(\hat{\tau}(t^*)) &= \sum_{j=n+1}^{m} \frac{w_j \cdot \theta_j^{t \geq t^*}}{w_j} - \sum_{i=1}^{n} \frac{w_i \cdot \theta_i^{t < t^*}}{w_i}
+  \end{aligned}
+\]
+
+Intuitively, we see that our manifold RD estimator is a topologically weighted average of post-treatment observations, that accounts for the pre-treatment "baseline". For our variance, 
+
+$$
+\begin{aligned}
+\mathbb{V}(\hat{\tau}(t^*)) &= \mathbb{V}\left(\sum_{j=n+1}^{m} \frac{w_j \cdot \theta_j^{t \geq t^*}}{w_j} - \sum_{i=1}^{n} \frac{w_i \cdot \theta_i^{t < t^*}}{w_i}\right) \\
+                            &= \mathbb{V}\left(\sum_{j=n+1}^{m} \frac{w_j \cdot \theta_j^{t \geq t^*}}{w_j}\right) + \mathbb{V}\left(\sum_{i=1}^{n} \frac{w_i \cdot \theta_i^{t < t^*}}{w_i}\right) \\
+                            &\underbrace{- 2\operatorname{Cov}\left(\sum_{j=n+1}^{m} \frac{w_j \cdot \theta_j^{t \geq t^*}}{w_j}, \sum_{i=1}^{n} \frac{w_i \cdot \theta_i^{t < t^*}}{w_i}\right)}_{=0}
+\end{aligned}
+$$
+
+Since the pre-treatment and post-treatment observations are assumed to be independent, the covariance term equals zero. The evaluation of the variance term depends on the underlying curvature of the manifold, and is thus highly dependent on the choice of manifold.
+
+Returning to our spherical example, our moment expressions simplify greatly. This is because in a sphere, our curvature is constant everywhere, thus yielding no variation in the weights. Therefore, our manifold RD estimator reduces to our canonical RD estimator, i.e. the difference of post- and pre-treatment angles. 
+
+$$
+\begin{aligned}
+  \mathbb{E}(\hat{\tau}(t^*)) &= \mu^{t \geq t^*} - \mu^{t < t^*} \\ 
+  \mathbb{V}(\hat{\tau}(t^*)) &= \frac{(\kappa^{t \geq t^*})^{-1}}{n-m} + \frac{(\kappa^{t < t^*})^{-1}}{n} 
+\end{aligned}
+$$
+
+Although the spherical example is thus somewhat trivial, we want to present a simulation study of the manifold RD estimator when both manifolds are spheres. We recycle the toy example from Section~\ref{sc:conjugacy}. Suppose we have a post-treatment mean projection angle, $\bar{\theta}^{t \geq t^*} = \pi$ and a pre-treatment mean projection angle, $\bar{\theta}^{t < t^*} = \pi/2$. We consider both of these manifolds to be circles, but the post-treatment manifold has radius $2$. Thus, the manifold we have fit grows from a unit circle (radius = $1$) to a post-treatment circle with radius $2$. This is relevant to biomedical settings where we believe our object of interest, e.g., a tumor growth, grows equally in size after treatment. This means that while the pre-treatment Gaussian curvature stays 1, i.e. $\kappa^{t < t^*} = 1$, our post-treatment curvature is now $\kappa^{t \geq t^*} = \frac{1}{R^2} = \frac{1}{4}$. We simulate 500 draws and observe the following results: 
+
 
 \begin{figure}[h!]
   \begin{center}
-    \includegraphics[width=1\textwidth]{../fig/rd-sim.png}
+    \includegraphics[width=0.95\textwidth]{../fig/rd_sim.png}
   \end{center}
-  \caption{Simulation of Treatment Effect $\hat{\tau}$}\label{fig:rd-sim}
+  \caption{Distribution of Pre- and Post-Treatment Data, Treatment Effect, and Estimated Treatment Effect}\label{fig:rd-sim}
 \end{figure}
 
+We can see that our estimator captures the treatment effect well. We want to reiterate that in the spherical setting, the manifold RD estimator simplifies to the canonical estimator. That being said, it is reassuring to see well-behaved simulation-based results in this simplest of settings. 
 
-We can see that the resulting treatment effect estimate $\hat{\tau}$ is indeed very close to $\frac{\pi}{2}$. The variance term is slightly above 1, i.e. greater than the individual parts.  
+\section{Discussion and Future Direction}
 
-When compared to well-established LLR methods, the mean projection angles are simply a spherical reparameterization of the outcome variable of interest. This formulation naturally preserves identification assumptions required for causal interpretation while accommodating the topological abstractions within the principal manifold framework. The magnitude of the posterior variance directly reflects how drastically treatment has altered the local geometry of our outcome space, e.g., if we have a large difference, we want to encode that topological uncertainty into our ATE. 
+When compared to well-established LLR methods, the mean projection angles are simply a spherical reparameterization of the outcome variable of interest. This formulation naturally preserves identification assumptions required for causal interpretation while accommodating the topological abstractions within the principal manifold framework. The magnitude of the posterior variance directly reflects how drastically treatment has altered the local geometry of our outcome space, e.g., if we have a large difference, we want to encode that topological uncertainty into our LATE. 
 
-An important point of emphasis is what this procedure is not. Namely, we are not simply updating our fitted manifold with the new data, and letting the posterior angle update iteratively with each new post-treatment observation. Rather, we are using the pre-treatment manifold to borrow topological information for our post-treatment mean vector. In that sense, after having fit $\mathcal{M}_d^{t \geq t^*}$ to the post-treatment data only, we assign the prior mean (i.e. $\bar{\theta}^{t<t^*}$) a weight of zero, only using the post-treatment observations.
+An important point of emphasis is what this procedure is not. Namely, we are not simply updating our fitted manifold with the new data, and letting the posterior angle update iteratively with each new post-treatment observation. This is certainly an interesting angle in the context of statistical learning procedures (e.g., prediction tasks), but would complicate causal identification. Rather, we are using the pre-treatment manifold to borrow topological information for our post-treatment mean vector. In that sense, after having fit $\mathcal{M}_d^{t \geq t^*}$ to the post-treatment data only, we assign the prior mean (i.e. $\bar{\theta}^{t<t^*}$) a weight of zero, only using the post-treatment observations.
 
-We round out this section with an appealing information-theoretic point of view. This manifold RD estimate is fundamentally analogous to the existing methods. The main difference is that this procedure accounts for the topological information of our embedding space. Existing methods are quick to discard this information and assume it away. Principled manifold learning approaches combined with the flexible probabilistic advantages of Bayesian methods can therefore yield estimates that respect both prior and topological information, resulting in more flexible and data-driven inference.
+We round out this section with an appealing information-theoretic point of view. This manifold RD estimate is fundamentally analogous to the existing methods that penalize observations for being further away from treatment onset in time. The main difference is that this procedure accounts for the topological information of our embedding space. Existing methods are quick to discard this information and assume it away. Through our Bayesian topological weights, we now have a procedure for iteratively updating our beliefs in the underlying topological structure of our data. Each additional observation in the post-treatment period allows us to strengthen our beliefs in local topological changes. 
 
-\section{Limitations and Future Direction}
+Future work could address the use of priors for the construction of the mean projection vectors in the pre- and post-treatment periods, respectively. That is, within the existing manifold RD framework, posit hyperpriors within each treatment period. This connects neatly to the idea of encoding global manifold prior information. A promising avenue within the broader topological data analysis is mmanifold learning drawing from persistent homology. To the author's knowledge, there currently exists no method to obtain causal estimates in a manifold RD setup. With that in mind, this idea is rudimentary and can benefit from more rigorous analysis and robust theoretical guarantees. 
 
-Future work could address the use of priors for the construction of the mean projection vectors in the pre- and post-treatment periods, respectively. 
+\section{Code and Data Availability Statement}
+
+Code necessary to reproduce the simulation study in this paper is available at the GitHub repository: \href{https://github.com/posmikdc/directional-priors}{https://github.com/posmikdc/directional-priors}
 
 \newpage
 
-\appendix
-\section*{Appendix A.} \label{sc:app_a}
-All code and documentation can be found here: \href{https://github.com/posmikdc/directional-priors}{https://github.com/posmikdc/directional-priors}
-
-\newpage 
+%\appendix
+%\section*{Appendix A.} \label{sc:app_a}
+%\newpage 
 \bibliography{references}
 
 \end{document}

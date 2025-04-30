@@ -1,278 +1,424 @@
 # ==============================================================================
-# Title: Manifold RD Simulation
+# Title: Manifold RD Estimator Simulations
 # Original Author: Daniel Posmik
 # E-Mail: daniel_posmik@brown.edu
 # ==============================================================================
-# Set-Up =======================================================================
+
+# Setup ========================================================================
 library(dplyr)
-library(tidyverse)
+library(ggplot2)
 library(circular)
-library(plotly)
-library(mvtnorm)
+library(latex2exp)
+
 # Set working directory
 setwd("~/Documents/brown/classes/spring25/php2530-bayes/directional-priors")
-# Simulation ===================================================================
 
-# Parameters
-n <- 500
-mean_post <- pi
+# Set Seed
+set.seed(1)
+
+# Simulation Parameters ========================================================
+n_sims <- 500       # Number of simulation runs
+n_pre <- 500        # Number of pre-treatment observations
+n_post <- 500       # Number of post-treatment observations
+t_star <- n_pre     # Cutoff point (time of treatment)
+
+# Pre-treatment parameters (unit circle)
 mean_pre <- pi/2
-var_post <- var_pre <- 1
-kappa_post <- 0.25
-kappa_pre <- 1  
+kappa_pre <- 5      # Concentration parameter (inverse of variance)
+radius_pre <- 1     # Radius of pre-treatment manifold (unit circle)
 
-# Generate samples
-set.seed(2025)
-# Pre-treatment: mean at pi/2, variance 1
-pre_treatment <- rvonmises(n, mu = circular(mean_pre), kappa = kappa_pre)
-# Post-treatment: mean at pi, variance 1
-post_treatment <- rvonmises(n, mu = circular(mean_post), kappa = kappa_post)
+# Post-treatment parameters (larger circle)
+mean_post <- pi
+kappa_post <- 5     # Same concentration for fair comparison
+radius_post <- 2    # Radius of post-treatment manifold
 
-# Calculate treatment effect distribution parameters
-mean_effect <- mean_post - mean_pre
-# Variance formula as specified
-variance_effect <- sqrt((kappa_pre * cos(mean_pre) + kappa_post * cos(mean_post))^2 + 
-                          (kappa_pre * sin(mean_pre) + kappa_post * sin(mean_post))^2)
+# True treatment effect
+true_effect <- mean_post - mean_pre
 
-# Calculate treatment effect samples
-# For circular data, we compute the difference between post and pre angles
-# We need to wrap the angles to ensure they stay in [0, 2π]
-treatment_effect <- (as.numeric(post_treatment) - as.numeric(pre_treatment)) %% (2*pi)
+# Derived parameters
+curvature_pre <- 1/radius_pre^2   # Gaussian curvature for pre-treatment sphere
+curvature_post <- 1/radius_post^2 # Gaussian curvature for post-treatment sphere
 
-# Function to create rose plot with plotly
-create_rose_plot_style <- function(angles, mean_angle, title, kappa_or_var = 1, is_variance = FALSE, 
-                                   plot_color = 'rgba(200, 200, 255, 0.7)', line_color = 'darkblue') {
-  # Number of bins for the rose plot
-  n_bins <- 24
-  bin_width <- 2*pi/n_bins
+# Function to generate data from von Mises distribution and add manifold properties
+generate_data <- function(n, mean_angle, kappa, radius, time, is_post_treatment) {
+  # Generate angles from von Mises distribution
+  angles <- as.numeric(rvonmises(n, mu = circular(mean_angle), kappa = kappa))
   
-  # Create bins for data
-  breaks <- seq(0, 2*pi, length.out = n_bins + 1)
-  bin_mids <- breaks[-1] - bin_width/2
+  # Calculate Gaussian curvature
+  curvature <- 1/radius^2
   
-  # Count data in each bin
-  data_bins <- table(cut(angles %% (2*pi), breaks = breaks, include.lowest = TRUE))
-  data_bins <- as.numeric(data_bins)
-  
-  # Normalize bin counts
-  data_bins_norm <- data_bins / max(data_bins)
-  
-  # Create data for the rose plot
-  plot_data <- data.frame(
-    bin_mid = bin_mids,
-    bin_start = breaks[-length(breaks)],
-    bin_end = breaks[-1],
-    data_count = data_bins_norm
+  # Create data frame
+  data <- data.frame(
+    time = time,
+    angle = angles,
+    radius = radius,
+    curvature = curvature,
+    post_treatment = as.integer(is_post_treatment),
+    x = radius * cos(angles),  # Cartesian coordinates for visualization
+    y = radius * sin(angles)
   )
   
-  # Create a function to generate rose plot wedge paths
-  create_wedge_path <- function(start_angle, end_angle, radius) {
-    theta_seq <- seq(start_angle, end_angle, length.out = 10)
+  return(data)
+}
+
+# Estimator Function ==========================================================
+# Standard RD estimator
+rd_standard <- function(data, bandwidth = NULL) {
+  if (!is.null(bandwidth)) {
+    # Use bandwidth for local linear regression
+    pre_data <- data %>% 
+      filter(post_treatment == 0) %>%
+      filter(time >= t_star - bandwidth)
     
-    # Create the path from center to outer edge to center
-    path_x <- c(0, radius * cos(theta_seq), 0)
-    path_y <- c(0, radius * sin(theta_seq), 0)
-    
-    return(list(x = path_x, y = path_y))
+    post_data <- data %>% 
+      filter(post_treatment == 1) %>%
+      filter(time <= t_star + bandwidth)
+  } else {
+    # Use all data
+    pre_data <- data %>% filter(post_treatment == 0)
+    post_data <- data %>% filter(post_treatment == 1)
   }
   
-  # Calculate data mean angle if not provided
-  if (is.null(mean_angle)) {
-    mean_angle <- circular::mean.circular(circular(angles, units="radians"))
-  }
+  # Calculate means
+  mean_pre <- mean(pre_data$angle)
+  mean_post <- mean(post_data$angle)
   
-  # Initialize plotly
-  p <- plot_ly()
+  # Treatment effect is difference in means
+  effect <- mean_post - mean_pre
   
-  # Add reference circles
-  for (r in seq(0.2, 1, by = 0.2)) {
-    circle_x <- r * cos(seq(0, 2*pi, length.out = 100))
-    circle_y <- r * sin(seq(0, 2*pi, length.out = 100))
-    
-    p <- p %>% add_trace(
-      x = circle_x, y = circle_y,
-      type = 'scatter', mode = 'lines',
-      line = list(color = 'gray', width = 0.5),
-      showlegend = FALSE
+  return(effect)
+}
+
+# Run Simulation ===============================================================
+run_simulation <- function() {
+  results <- data.frame(
+    sim = 1:n_sims,
+    rd_estimate = numeric(n_sims)
+  )
+  
+  for (i in 1:n_sims) {
+    # Generate data
+    pre_treatment <- generate_data(
+      n = n_pre, 
+      mean_angle = mean_pre, 
+      kappa = kappa_pre, 
+      radius = radius_pre, 
+      time = 1:n_pre, 
+      is_post_treatment = FALSE
     )
+    
+    post_treatment <- generate_data(
+      n = n_post, 
+      mean_angle = mean_post, 
+      kappa = kappa_post, 
+      radius = radius_post, 
+      time = (t_star + 1):(t_star + n_post), 
+      is_post_treatment = TRUE
+    )
+    
+    # Combine datasets
+    full_data <- rbind(pre_treatment, post_treatment)
+    
+    # Calculate treatment effect
+    results$rd_estimate[i] <- rd_standard(full_data)
   }
   
-  # Add data wedges
-  for (i in 1:nrow(plot_data)) {
-    if (plot_data$data_count[i] > 0) {
-      wedge <- create_wedge_path(
-        plot_data$bin_start[i], 
-        plot_data$bin_end[i],
-        plot_data$data_count[i]
+  return(results)
+}
+
+# Additional simulation with varying kappa values
+run_simulation_varying_kappa <- function() {
+  kappa_values <- c(0.5, 1, 2, 5, 10, 20)
+  results <- data.frame(
+    kappa = rep(kappa_values, each = n_sims),
+    sim = rep(1:n_sims, times = length(kappa_values)),
+    rd_estimate = numeric(n_sims * length(kappa_values))
+  )
+  
+  row_idx <- 1
+  for (k in kappa_values) {
+    for (i in 1:n_sims) {
+      # Generate data with current kappa value
+      pre_treatment <- generate_data(
+        n = n_pre, 
+        mean_angle = mean_pre, 
+        kappa = k,  # Varying kappa
+        radius = radius_pre, 
+        time = 1:n_pre, 
+        is_post_treatment = FALSE
       )
       
-      p <- p %>% add_trace(
-        x = wedge$x, y = wedge$y,
-        fill = 'toself',
-        fillcolor = plot_color,
-        line = list(color = line_color, width = 0.5),
-        showlegend = i == 1,  # Only show legend for the first wedge
-        name = title
+      post_treatment <- generate_data(
+        n = n_post, 
+        mean_angle = mean_post, 
+        kappa = k,  # Varying kappa
+        radius = radius_post, 
+        time = (t_star + 1):(t_star + n_post), 
+        is_post_treatment = TRUE
       )
+      
+      # Combine datasets
+      full_data <- rbind(pre_treatment, post_treatment)
+      
+      # Calculate treatment effect
+      results$rd_estimate[row_idx] <- rd_standard(full_data)
+      
+      row_idx <- row_idx + 1
     }
   }
   
-  # Add angle labels around the circle
-  angle_labels <- seq(0, 330, by = 30)
-  label_radius <- 1.2
-  annotations <- list()
-  
-  for (angle_deg in angle_labels) {
-    angle_rad <- angle_deg * pi / 180
-    annotations <- c(annotations, list(
-      list(
-        x = label_radius * cos(angle_rad),
-        y = label_radius * sin(angle_rad),
-        text = as.character(angle_deg),
-        showarrow = FALSE,
-        font = list(size = 10)
-      )
-    ))
-  }
-  
-  # Add mean direction arrow
-  p <- p %>% add_trace(
-    x = c(0, 1.1 * cos(mean_angle)),
-    y = c(0, 1.1 * sin(mean_angle)),
-    type = 'scatter', mode = 'lines',
-    line = list(color = line_color, width = 2, dash = 'dash'),
-    showlegend = FALSE,
-    name = 'Mean'
-  )
-  
-  # Add parameter annotations at the top
-  mean_text <- paste("μ =", round(mean_angle * 180/pi, 1), "°")
-  param_text <- ifelse(is_variance, 
-                       paste("σ =", round(kappa_or_var, 2)),
-                       paste("κ =", round(kappa_or_var, 2)))
-  
-  # Add parameter annotations at the top
-  annotations <- c(annotations, list(
-    list(
-      x = 0, y = -1.65,
-      text = paste(mean_text, ", ", param_text),
-      showarrow = FALSE,
-      xanchor = "center",
-      font = list(size = 11)
-    )
-  ))
-  
-  # Layout adjustments
-  p <- p %>% layout(
-    xaxis = list(
-      title = "",
-      zeroline = FALSE,
-      showgrid = FALSE,
-      showticklabels = FALSE,
-      range = c(-1.3, 1.3)
-    ),
-    yaxis = list(
-      title = "",
-      zeroline = FALSE,
-      showgrid = FALSE,
-      showticklabels = FALSE,
-      range = c(-1.3, 1.3),
-      scaleanchor = "x"
-    ),
-    annotations = annotations,
-    showlegend = TRUE,
-    margin = list(l = 40, r = 40, b = 40, t = 40) # Added top margin for parameter text
-  )
-  
-  return(p)
+  return(results)
 }
 
-# Create rose plots with different colors
-plot1 <- create_rose_plot_style(
-  as.numeric(pre_treatment), 
-  mean_pre, 
-  "Pre-treatment Distribution", 
-  kappa_pre,
-  plot_color = 'rgba(173, 216, 230, 0.7)',  # Light blue
-  line_color = 'navy'
-)
+# Execute simulations
+results <- run_simulation()
+results_varying_kappa <- run_simulation_varying_kappa()
 
-plot2 <- create_rose_plot_style(
-  as.numeric(post_treatment), 
-  mean_post, 
-  "Post-treatment Distribution", 
-  kappa_post,
-  plot_color = 'rgba(144, 238, 144, 0.7)',  # Light green
-  line_color = 'darkgreen'
-)
+# Visualizations ===============================================================
 
-plot3 <- create_rose_plot_style(
-  treatment_effect, 
-  mean_effect, 
-  "Treatment Effect Distribution", 
-  variance_effect, 
-  is_variance = TRUE,
-  plot_color = 'rgba(255, 222, 173, 0.7)',  # Light orange
-  line_color = 'darkorange'
-)
-
-# Create the combined plot with shared legend at the bottom
-combined_plot <- plotly::subplot(plot1, plot2, plot3, nrows = 1, shareY = TRUE) %>%
-  layout(
-    showlegend = TRUE,
-    legend = list(
-      orientation = "h",      # Horizontal legend
-      xanchor = "center",     # Center the legend horizontally
-      x = 0.5,                # Position at the center of the plot
-      y = 0                   # Position at the bottom
-    ),
-    margin = list(b = 80)     # Add bottom margin for the legend
+# 1. Visualize a single data sample
+visualize_sample_data <- function() {
+  # Generate one sample
+  pre_treatment <- generate_data(
+    n = n_pre, 
+    mean_angle = mean_pre, 
+    kappa = kappa_pre, 
+    radius = radius_pre, 
+    time = 1:n_pre, 
+    is_post_treatment = FALSE
   )
-
-# Display the combined plot
-combined_plot
-
-# Create rose plots with different colors
-plot1 <- create_rose_plot_style(
-  as.numeric(pre_treatment), 
-  mean_pre, 
-  "Pre-treatment Distribution", 
-  kappa_pre,
-  plot_color = 'rgba(173, 216, 230, 0.7)',  # Light blue
-  line_color = 'navy'
-)
-
-plot2 <- create_rose_plot_style(
-  as.numeric(post_treatment), 
-  mean_post, 
-  "Post-treatment Distribution", 
-  kappa_post,
-  plot_color = 'rgba(144, 238, 144, 0.7)',  # Light green
-  line_color = 'darkgreen'
-)
-
-plot3 <- create_rose_plot_style(
-  treatment_effect, 
-  mean_effect, 
-  "Treatment Effect Distribution", 
-  variance_effect, 
-  is_variance = TRUE,
-  plot_color = 'rgba(255, 222, 173, 0.7)',  # Light orange
-  line_color = 'darkorange'
-)
-
-# Create the combined plot with shared legend at the bottom
-combined_plot <- plotly::subplot(plot1, plot2, plot3, nrows = 1, shareY = TRUE) %>%
-  layout(
-    showlegend = TRUE,
-    legend = list(
-      orientation = "h",      # Horizontal legend
-      xanchor = "center",     # Center the legend horizontally
-      x = 0.5,                # Position at the center of the plot
-      y = 0.2                   # Position at the bottom
-    ),
-    margin = list(b = 80)     # Add bottom margin for the legend
+  
+  post_treatment <- generate_data(
+    n = n_post, 
+    mean_angle = mean_post, 
+    kappa = kappa_post, 
+    radius = radius_post, 
+    time = (t_star + 1):(t_star + n_post), 
+    is_post_treatment = TRUE
   )
+  
+  # Calculate mean angles for pre and post treatment
+  mean_pre_x <- radius_pre * cos(mean_pre)
+  mean_pre_y <- radius_pre * sin(mean_pre)
+  mean_post_x <- radius_post * cos(mean_post)
+  mean_post_y <- radius_post * sin(mean_post)
+  
+  # Calculate angle difference (treatment effect) in radians
+  effect_radians <- mean_post - mean_pre
+  
+  # Plot
+  ggplot() +
+    # Pre-treatment data
+    geom_point(data = pre_treatment, 
+               aes(x = x, y = y), 
+               color = "black", alpha = 0.4, size = 1) +
+    # Post-treatment data
+    geom_point(data = post_treatment, 
+               aes(x = x, y = y), 
+               color = "darkorange", alpha = 0.4, size = 1) +
+    # Pre-treatment circle
+    geom_path(data = data.frame(
+      angle = seq(0, 2*pi, length.out = 100),
+      x = radius_pre * cos(seq(0, 2*pi, length.out = 100)),
+      y = radius_pre * sin(seq(0, 2*pi, length.out = 100))
+    ), aes(x = x, y = y), color = "black", linetype = "dashed") +
+    # Post-treatment circle
+    geom_path(data = data.frame(
+      angle = seq(0, 2*pi, length.out = 100),
+      x = radius_post * cos(seq(0, 2*pi, length.out = 100)),
+      y = radius_post * sin(seq(0, 2*pi, length.out = 100))
+    ), aes(x = x, y = y), color = "red", linetype = "dashed") +
+    # Mean points
+    geom_point(aes(x = mean_pre_x, y = mean_pre_y), color = "darkgrey", size = 3) +
+    geom_point(aes(x = mean_post_x, y = mean_post_y), color = "red", size = 3) +
+    # Connect mean points to origin
+    geom_segment(aes(x = 0, y = 0, xend = mean_pre_x, yend = mean_pre_y), 
+                 arrow = arrow(length = unit(0.2, "cm")), color = "black") +
+    geom_segment(aes(x = 0, y = 0, xend = mean_post_x, yend = mean_post_y), 
+                 arrow = arrow(length = unit(0.2, "cm")), color = "red") +
+    # Annotations
+    annotate("text", x = mean_pre_x * 1.1, y = mean_pre_y * 1.2, 
+             label = TeX("$\\bar{\\theta}^{~t<t^*}$"), color = "black", size = 4) +
+    annotate("text", x = mean_post_x * 1.1, y = mean_post_y * 1.1, 
+             label = TeX("$\\bar{\\theta}^{~t \\geq t^*}$"), color = "red", size = 4) +
+    # Add annotation for effect size (π/2)
+    annotate("text", x = 0, y = -0.4, 
+             label = TeX(paste0("$\\tau = $", round(effect_radians, 2), " (deg: ", 
+                                round(effect_radians * 180/pi, 2), "$^{\\circ}$)")), 
+             size = 4) +
+    # Theme and labels
+    theme_minimal() +
+    labs(
+      title = "Canonical RD: Pre- and Post-Treatment Data",
+      subtitle = "Black: Pre-treatment (r=1), Orange: Post-treatment (r=2)",
+      x = "x",
+      y = "y"
+    ) +
+    coord_fixed(ratio = 1) +  # Equal aspect ratio
+    theme(
+      plot.title = element_text(size = 14, face = "bold"),
+      plot.subtitle = element_text(size = 12),
+      axis.title = element_text(size = 12)
+    )
+}
 
-# Display the combined plot
-combined_plot
+# 2. Distribution of treatment effect estimates
+plot_effect_distribution <- function(results) {
+  # Calculate mean and standard deviation
+  mean_estimate <- mean(results$rd_estimate)
+  sd_estimate <- sd(results$rd_estimate)
+  
+  # Create density plot
+  ggplot(results, aes(x = rd_estimate)) +
+    geom_density(fill = "darkblue", alpha = 0.5) +
+    geom_vline(xintercept = true_effect, linetype = "dashed", color = "black") +
+    # Add mean line
+    geom_vline(xintercept = mean_estimate, color = "blue", linetype = "dotted") +
+    # Annotations
+    annotate("text", x = true_effect, y = 5, 
+             label = paste("True Effect =", round(true_effect, 2)), 
+             angle = 90, vjust = -0.5) +
+    # Formatting
+    labs(
+      title = "Distribution of RD Treatment Effect Estimates",
+      subtitle = paste0("True effect = ", round(true_effect, 2), 
+                        ", Mean = ", round(mean_estimate, 2), 
+                        " (SD = ", round(sd_estimate, 2), ")"),
+      x = "Estimated Treatment Effect",
+      y = "Density"
+    ) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(size = 14, face = "bold"),
+      plot.subtitle = element_text(size = 10)
+    )
+}
+
+# 3. Error metrics
+plot_error_metrics <- function(results) {
+  # Calculate bias, MSE, MAE
+  results <- results %>%
+    mutate(
+      bias = rd_estimate - true_effect,
+      sq_error = (rd_estimate - true_effect)^2,
+      abs_error = abs(rd_estimate - true_effect)
+    )
+  
+  # Calculate summary statistics
+  bias <- mean(results$bias)
+  mse <- mean(results$sq_error)
+  mae <- mean(results$abs_error)
+  sd_val <- sd(results$rd_estimate)
+  
+  # Create data frame for plotting
+  error_summary <- data.frame(
+    Metric = factor(c("Bias", "MSE", "MAE", "SD"), 
+                    levels = c("Bias", "MSE", "MAE", "SD")),
+    Value = c(bias, mse, mae, sd_val)
+  )
+  
+  # Create bar plot
+  ggplot(error_summary, aes(x = Metric, y = Value, fill = Metric)) +
+    geom_col() +
+    geom_text(aes(label = round(Value, 3)), vjust = -0.5, size = 4) +
+    scale_fill_manual(values = rep("darkblue", 4)) +
+    labs(
+      title = "RD Estimator Performance Metrics",
+      x = "Metric",
+      y = "Value"
+    ) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(size = 14, face = "bold"),
+      legend.position = "none"
+    )
+}
+
+# 4. Performance across varying concentration parameters (kappa)
+plot_kappa_performance <- function(results_varying_kappa) {
+  # Calculate bias and MSE for each kappa
+  summary_by_kappa <- results_varying_kappa %>%
+    group_by(kappa) %>%
+    summarize(
+      bias = mean(rd_estimate - true_effect),
+      abs_bias = mean(abs(rd_estimate - true_effect)),
+      mse = mean((rd_estimate - true_effect)^2),
+      sd = sd(rd_estimate)
+    )
+  
+  # Plot bias by kappa
+  p1 <- ggplot(summary_by_kappa, aes(x = kappa, y = abs_bias)) +
+    geom_line(size = 1, color = "darkblue") +
+    geom_point(size = 3, color = "darkblue") +
+    scale_x_log10() +  # Log scale for kappa
+    labs(
+      title = "Absolute Bias by Concentration Parameter",
+      x = "Concentration Parameter (κ, log scale)",
+      y = "Absolute Bias"
+    ) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(size = 14, face = "bold")
+    )
+  
+  # Plot MSE by kappa
+  p2 <- ggplot(summary_by_kappa, aes(x = kappa, y = mse)) +
+    geom_line(size = 1, color = "darkblue") +
+    geom_point(size = 3, color = "darkblue") +
+    scale_x_log10() +  # Log scale for kappa
+    labs(
+      title = "Mean Squared Error by Concentration Parameter",
+      x = "Concentration Parameter (κ, log scale)",
+      y = "MSE"
+    ) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(size = 14, face = "bold")
+    )
+  
+  # Plot SD by kappa
+  p3 <- ggplot(summary_by_kappa, aes(x = kappa, y = sd)) +
+    geom_line(size = 1, color = "darkblue") +
+    geom_point(size = 3, color = "darkblue") +
+    scale_x_log10() +  # Log scale for kappa
+    labs(
+      title = "Standard Deviation by Concentration Parameter",
+      x = "Concentration Parameter (κ, log scale)",
+      y = "Standard Deviation"
+    ) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(size = 14, face = "bold")
+    )
+  
+  return(list(p1 = p1, p2 = p2, p3 = p3))
+}
+
+# Generate all plots
+p_sample <- visualize_sample_data()
+p_dist <- plot_effect_distribution(results)
+p_metrics <- plot_error_metrics(results)
+p_kappa <- plot_kappa_performance(results_varying_kappa)
+
+# Print summary statistics
+cat("\n=== Canonical RD Simulation Results ===\n\n")
+cat(sprintf("True treatment effect: %.4f\n", true_effect))
+cat(sprintf("Number of simulations: %d\n", n_sims))
+cat(sprintf("Mean estimate: %.4f\n", mean(results$rd_estimate)))
+cat(sprintf("Standard deviation: %.4f\n", sd(results$rd_estimate)))
+cat(sprintf("Bias: %.4f\n", mean(results$rd_estimate) - true_effect))
+cat(sprintf("MSE: %.4f\n", mean((results$rd_estimate - true_effect)^2)))
+cat(sprintf("MAE: %.4f\n", mean(abs(results$rd_estimate - true_effect))))
+
+# Display plots
+p1 <- gridExtra::grid.arrange(p_sample, p_dist, ncol = 2)
+
+p2 <- gridExtra::grid.arrange(p_metrics,
+                              p_kappa$p1,
+                              p_kappa$p2,
+                              p_kappa$p3,
+                              nrow = 2, 
+                              ncol = 2)
+
+ggsave("fig/rd_sim.png", p1, width = 12, height = 6, dpi = 300)
+ggsave("fig/rd_diagnostics.png", p2, width = 12, height = 6, dpi = 300)

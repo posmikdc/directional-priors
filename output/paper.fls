@@ -257,14 +257,12 @@ INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmbsy
 INPUT /Users/posmikdc/Library/texlive/2024/texmf-var/luatex-cache/generic/fonts/otl/lmroman10-bold.luc
 INPUT ../fig/projections-from-origin.png
 INPUT ../fig/projections-from-origin.png
-INPUT ../fig/gaussian-curvature.png
-INPUT ../fig/gaussian-curvature.png
 INPUT ../fig/posterior-roseplot.png
 INPUT ../fig/posterior-roseplot.png
-INPUT ../fig/rd-sim.png
-INPUT ../fig/rd-sim.png
-INPUT ./paper.bbl
 INPUT /Users/posmikdc/Library/texlive/2024/texmf-var/luatex-cache/generic/fonts/otl/lmroman10-italic.luc
+INPUT ../fig/rd_sim.png
+INPUT ../fig/rd_sim.png
+INPUT ./paper.bbl
 INPUT /Users/posmikdc/Library/texlive/2024/texmf-var/luatex-cache/generic/fonts/otl/lmmono10-regular.luc
 INPUT ./paper.aux
 INPUT ./paper.out
