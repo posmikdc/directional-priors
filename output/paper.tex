@@ -20,7 +20,7 @@ Posmik}
 
 \begin{document}
 
-\title{Bayesian Topological Weights in Causal Inference -- \\ Toward a Manifold RD Estimator \\
+\title{Bayesian Topological Weights in Causal Inference -- \\ Toward a Manifold Regression Discontinuity Estimator \\
 \vspace{.1in}
 PHP2530			
 }
@@ -32,9 +32,7 @@ PHP2530
 
 \section{Introduction} \label{sc:intro}
 
-\textcolor{red}{There's a parellel to random effects; Call them Bayesian topo weights; Algorithm: while $i < N$, 1) Draw $\theta_i$ from posterior, 2) get $kappa_i$ at that $\theta_i$, 3) Calculate weight}
-
-Manifold learning is dimensionality reduction technique that has proven useful in settings where data are high-dimensional and non-linear. Often, manifold learning algorithms are used when the topological structure of the data are to be preserved in a statistical learning task\footnote{For an introduction, see \citet{Meila2023}}. Within the manifold learning framework, data are assumed to live on a lower dimensional manifold and are corrupted by high-dimensional noise. We say that $D$-dimensional data can be embedded in $d$-dimensional manifold where $d \leq D$ but generally $d \ll D$ .  
+Manifold learning is dimensionality reduction technique that has proven useful in settings where data are high-dimensional and non-linear. Often, manifold learning algorithms are used when the topological structure of the data are to be preserved in a statistical learning task\footnote{For a suitable introduction, see \citet{Meila2023}}. Within the manifold learning framework, data are assumed to live on a lower dimensional manifold and are corrupted by high-dimensional noise. We say that $D$-dimensional data can be embedded in $d$-dimensional manifold where $d \leq D$ but generally $d \ll D$ .  
 
 \begin{figure}[h!]
   \begin{center}
@@ -96,11 +94,11 @@ Manifold learning is dimensionality reduction technique that has proven useful i
   \caption{Manifold Learning: Parameterization vs. Embedding}\label{fig:manifolds}
 \end{figure}
 
-Within the principal manifolds framework \citep{Meng2021} -- a replicable and flexible framework for manifold learning -- the process of fitting a manifold to our data contains multiple steps. The key idea of the fitting step is that we fit a $d$-dimensional manifold to our $D$-dimensional by minimizing the sum of squares between our data and the proposed manifold. An important extension to linear dimensionality reduction, i.e. the principal components algorithm (PCA), is that we allow our proposed manifold to preserve underlying topological structure of our data. In a way, manifold learning reduces the dimensionality of data with an explicit focus on the topology of it. We note that -- although certainly intuitive -- this topological structure is not only limited to spatial abstraction, but may be extended to arbitrary dimensions of interest. This framework was pioneered as an extension to the PCA algorithm with curves (\citet{HastieStuetzle1989}, \citet{Tibshirani1992}) and has since found a myriad of applications in higher-dimensional settings. 
+Within the principal manifolds framework \citep{Meng2021} -- a replicable and flexible framework for manifold learning -- we effectively extend linear dimensionality reduction, i.e. the principal components algorithm (PCA), by allowing our proposed manifold to preserve underlying topological structure of our data. In a way, manifold learning reduces the dimensionality of data with an explicit focus on the topology of it. We note that -- although certainly intuitive -- this topological structure is not only limited to spatial abstraction, but may be extended to arbitrary dimensions of interest. This framework was pioneered as an extension to the PCA algorithm with curves (\citet{HastieStuetzle1989}, \citet{Tibshirani1992}) and has since found a myriad of applications in higher-dimensional settings. 
 
-We now propose a method for incorporating prior distributional information into the principal manifolds framework. 
+We propose a causal regression discontinuity (RD) method within the manifold framework. To effectively account for the change in underlying topological structure, we propose Bayesian weights that incorporate prior distributional information from the pre-treatment period. Before we dive into the causal estimator, we provide important background on the concept of directional priors in manifolds in the next section. The paper is rounded by a brief presentation, simulation, and discussion on the manifold RD estimator.   
 
-\section{Background}\label{sc:background}
+\section{Manifold Learning and Directional Information}\label{sc:background}
 
 Consider a setting where we have fit a manifold $\mathcal{M}_d$ to our $D$-dimensional data by means of minimizing the orthogonal distance between the data and the manifold. We consider this manifold fixed and will not touch on the fitting procedure itself. Given $\mathcal{M}_d$, for each data point, i.e. the row vector $[x_{11} \cdots x_{1D}]^T$, we can now define the point on $\mathcal{M}_d$, say $f\left(\left[x_{11} \cdots x_{1D}\right]^T\right)$. This point minimizes the distance between $x_i$ and $f(x_i)$. We want to stress again that this procedure does not mean we are fitting the manifold to the data, we are simply retrieving the distance-minimizing projection point. We write 
 
@@ -108,11 +106,13 @@ $$
 \text{arg~min}_{f \in \mathcal{F}} \|x^* - f(x^*)\|_2
 $$
 
-where we consider each projection function $f$ to be a member of an arbitrary Sobolev space $\mathcal{F}$. We define the distance metric as the $L^2$ distance. 
+where we consider each projection function $f$ to be a member of an arbitrary function space $\mathcal{F}$ (for convenience, assume $\mathcal{F}$ is a Sobolev space). We define the distance metric as the $L^2$ distance. 
 
 If there exists only one projection point $f(x_i)$ for every $x_i$, every $f \in \mathcal{F}$ is a one-to-one and onto ("bijective") mapping. We find it interesting to highlight that the projection functions in the PCA algorithm are inherently bijective, and for inferential purposes, this is a property that is often taken for granted\footnote{This is because a principal axes is a straight line, i.e. neither convex or concave. Although a point's distance to its projection may be co-minimal across $\leq 2$ dimensions, it only has one $f(x_i)$ in one principal axis.}. In a manifold learning framework, this is no longer the case. Albeit highly interesting, due to the limited scope of this paper, we shall treat this scenario as an edge case, reserving rigorous treatment for the blissful times that follow the author's qualifying exam. 
 
-Now, given the data $[\{x_i\}_{i=1}^n, \{f(x_i)\}_{i=1}^n]$, we can reparameterize our space into polar coordinates to obtain a vector representation of the collection $f \in \mathcal{F}$. Converting a Cartesian parameterization in space with $D$ dimensions into polar coordinates yields the $d$-dimensional vector $[r_i^*; \theta_{i, 1}, \cdots, \theta_{i, D-1}]$, i.e. one radius $r_i^*$ and a set of $D-1$ angles suffice to characterize each point $x_i$'s location in space. 
+\subsection{Directional Priors}\label{sc:directional-priors}
+
+Given the projected data $[\{x_i\}_{i=1}^n, \{f(x_i)\}_{i=1}^n]$ on the manifold, we can reparameterize our space into polar coordinates to obtain a vector representation of the collection $f \in \mathcal{F}$. Converting a Cartesian parameterization in space with $D$ dimensions into polar coordinates yields the $d$-dimensional vector $[r_i^*; \theta_{i, 1}, \cdots, \theta_{i, D-1}]$, i.e. one radius $r_i^*$ and a set of $D-1$ angles suffice to characterize each point $x_i$'s location in space. 
 
 Recognize that the parameter $r^*$ is not random. This is because it is simply the result from our previous projection distance-minimizing procedure. Usually, polar parameterizations assume that all angles and radii are centered at the origin. Luckily, simple vector addition and subtraction readily generalizes our parameterizations in space. For instance, to obtain the vector from the point $x_i$ and $f(x_i)$, we simply subtract $f(x_i) - x_i$. It is important that the issue of defining the origin is explicitly clarified when dealing with directional information. For simplicity, we will henceforth consider data centered at the origin.
 
@@ -124,15 +124,12 @@ Recognize that the parameter $r^*$ is not random. This is because it is simply t
 \end{figure}
 
 
-\section{Directional Priors}\label{sc:directional-priors}
 
-In contrast to the radii, the $\{D-1\}$-dimensional vector of angles, $\boldsymbol{\theta_i} := [\theta_{i, 1}, \cdots, \theta_{i, D-1}]^T$ is random. In simple terms, $\{r_i, \boldsymbol{\theta}_i\}$ is what parameterizes the realized sample $\boldsymbol{X_i} = x_i$ in space. If we draw multiple samples, the random sampling variation in $\mathbf{\theta}_i$ is what captures the randomness. In biomedical applications, such as cancer medicine, we may have reliable prior information (i.e. from previous trials or expert knowledge) on directional trends of malignant growths. Within a Bayesian framework, using our data to update these prior directional information offers a principled, probabilistic solution to complex inference problems in settings where directionality is a key piece of information.   
-
-Before we formulate our approach formally, we briefly introduce directional statistics. When we reparameterized our data from Cartesian coordinates into polar coordinates, we did not address the underlying probabilistic transformations. For example, when encoding uncertainty in a spherical setting, it may be naive to parameterize a normal density with support on $\mathbb{R}^1$ since angles are defined in the interval $[0, 2\pi]$. Directional statistics offer well-defined spherical reparameterizations of distributions, such as the normal. Instead of defining a mean vector in $\mathbb{R}^1$, we can define a mean directional vector contained in $[0, 2\pi]$. To account for the infinite support, the wrapped normal is defined on a support of $k\text{mod}(2\pi)$. Henceforth, unless stated otherwise, we will deal with the spherical parameterizations of densities to account for the spherical parameterization of our problem. 
+In contrast to the radii, the $\{D-1\}$-dimensional vector of angles, $\theta_i := [\theta_{i, 1}, \cdots, \theta_{i, D-1}]^T$ is random. In simple terms, $\{r_i, \theta_i\}$ is what parameterizes the realized sample $X_i = x_i$ in space. If we draw multiple samples, the random sampling variation in $\mathbf{\theta}_i$ is what captures the randomness. In biomedical applications, such as cancer medicine, we may have reliable prior information (i.e. from previous trials or expert knowledge) on directional trends of malignant growths. Within a Bayesian framework, using our data to update these prior directional information offers a principled, probabilistic solution to complex inference problems in settings where directionality is a key piece of information.   
 
 \subsection{Motivating Example: 3D Sphere}
 
-We begin our discussion with an example of a 3D sphere. As discussed, this means that we have some simulated noisy data $\{x_i\}_{i=1}^n$ in 3D space. The noisy data is projected on the manifold of choice, i.e. the unit sphere. This yields the data $\{f(x_i)\}_{i=1}^n$. These data are parameterized in a polar coordinate system with $\{r_i, \mathbf{\theta}_i\}$, where the (non-random) radius $\vec{r_i}$ is the vector from the origin to $f(x_i)$. Since we are in 3D space, we have two angles. One angle, $\{\mathbf{\theta}\}_{i=1}^n$, which parameterizes the angle from the origin on the XY-plane. The angle $\{\mathbf{\phi}\}_{i=1}^n$ is the angle between the XY-plane and the point $f(x_i)$. 
+For the remainder of this paper, we will stick to the example of a 3D sphere. The noisy data is projected on the sphere of choice, for simplicity we choose the unit sphere. This yields the data $\{f(x_i)\}_{i=1}^n$. These data are parameterized in a polar coordinate system with $\{r_i, \mathbf{\theta}_i\}$, where the (non-random) radius $\vec{r_i}$ is the vector from the origin to $f(x_i)$. Since we are in 3D space, we have two angles. One angle, $\{\mathbf{\theta}\}_{i=1}^n$, which parameterizes the angle from the origin on the XY-plane. The angle $\{\mathbf{\phi}\}_{i=1}^n$ is the angle between the XY-plane and the point $f(x_i)$. 
 
 \begin{figure}[h!]
   \begin{center}
@@ -143,15 +140,14 @@ We begin our discussion with an example of a 3D sphere. As discussed, this means
 
 \subsection{Formulating Directional Priors}\label{sc:dir-priors}
 
-Formulating a directional prior requires careful consideration of reference points. All angles must be measured from the same reference point—for simplicity, we choose the origin. A directional prior with mean direction $\mu \in [0, \pi]$ allows us to incorporate information about where projected points should concentrate on the manifold. We only posit a prior on the random set $\{\theta_i\}_{i=1}^n$, expressing prior distributional beliefs on point concentrations in the XY-plane. For this example, we consider angles $\{\phi_i\}_{i=1}^n$ fixed, making our example univariate. Extension to the multivariate case is straightforward using multivariate analogs of our likelihood and prior distributions.
+We are now ready to formally define directional priors. A directional prior with mean direction $\mu \in [0, \pi]$ allows us to incorporate information about where projected points should concentrate on the manifold. We only posit a prior on the random set $\{\theta_i\}_{i=1}^n$, expressing prior distributional beliefs on point concentrations in the XY-plane. For this example, we consider angles $\{\phi_i\}_{i=1}^n$ fixed, making our example univariate. Extension to the multivariate case is straightforward using multivariate analogs of our likelihood and prior distributions.
 
-Our posterior distribution on the random vector $\theta$ can be expressed as:
+Our posterior distribution on the random vector $\theta$ can be expressed as follows:
 
 $$
 \begin{aligned}
   f_{\theta | \mu} (\theta | \mu) 
-  &\propto \left\{ \prod_{i=1}^n f_{\theta_i | \mu}(\theta_i | \mu) \right\} \cdot f_{\mu}(\mu) \\ 
-  &\propto \mathcal{L}(\theta | \mu) \cdot f_{\mu}(\mu) 
+  &\propto \left\{ \prod_{i=1}^n f_{\theta_i | \mu}(\theta_i | \mu) \right\} \cdot f_{\mu}(\mu)
 \end{aligned}
 $$
 
@@ -172,9 +168,7 @@ where $\theta$ is the angle, $\mu$ is the mean direction, $\kappa \geq 0$ is the
 
 \subsection{Variance Encodes Curvature}\label{sc:curvature}
 
-For our concentration parameter $\kappa$, naive selection (e.g., a constant) would be possible but would negate the benefits of manifold learning as a topology-preserving dimensionality reduction technique. Instead, we propose a principled approach that encodes local topological structure into the variance parameter. Intuitively, in regions with little topological variation, we might update our projection more liberally. Conversely, if a small change in projection angle moves our data point into a topologically distinct region, we would be more conservative with updates.
-
-In spherically parameterized manifolds, the inverse absolute Gaussian curvature provides a natural variance encoding. This approach has an elegant connection to the score test in likelihood-based inference, which uses the slope at restricted MLE estimates as a similarity measure. Thus, our solution has both topological intuition and established statistical parallels in traditional inference methods.
+In smooth manifolds, choosing the inverse Gaussian curvature as our variance term yields a principled approach to encode topological structure into the variance paramater. Intuitively, in regions with little topological variation, we might update our projection more liberally. Conversely, if a small change in projection angle moves our data point into a topologically distinct region, we would be more conservative with updates. This approach has an elegant connection to the score test in likelihood-based inference, which uses the slope at restricted MLE estimates as a similarity measure. Considering $\kappa$ as random nuisance parameter also provides a bridge to the mixed models literature.
 
 The Gaussian curvature of a surface can be defined as the product of the principal curvatures:
 
@@ -194,17 +188,9 @@ where angles $\{\theta_i\}_{i=1}^n \sim \mathcal{VM}(\mu_i, \kappa)$ and the pri
 
 The posterior form reveals a shrinkage estimator structure. The component involving observed angles $\{\theta_i\}_{i=1}^n$ is weighted by $\kappa$, which in our framework represents the curvature at the projected point. The difference between the data mean and prior mean is weighted by the prior concentration parameter $\kappa^*$. This structure extends shrinkage estimation to our topological interpretation: when the data concentration parameter $\kappa$ is low, more weight is attributed to our prior information.
 
-For our 3D spherical example, given a prior $\boldsymbol{\theta} \sim \mathcal{VM}(\theta_0, \tau_0 = \frac{1}{\kappa_0})$, the posterior mean is:
-
-$$
-\underbrace{\frac{\tau_0}{\tau_0 + \hat{\tau}} \cdot \theta_0}_{\text{Weighted Prior Vector}} + \underbrace{\frac{\hat{\tau}}{\tau_0 + \hat{\tau}} \cdot \bar{\theta}}_{\text{Weighted Data Vector}}
-$$
-
-with posterior variance $(\tau_0 + \hat{\tau})^{-1}$, where $\bar{\theta} := \frac{1}{n}\sum_{i=1}^n \theta_i$ and $\hat{\tau} = \frac{1}{\hat{\kappa}}$ with $\hat{\kappa}$ being the observed Gaussian curvature at the manifold point. The shrinkage toward the prior mean is immediately evident in this expression.
-
 \begin{figure}[h!]
   \begin{center}
-    \includegraphics[width=1\textwidth]{../fig/posterior-roseplot.png}
+    \includegraphics[width=0.85\textwidth]{../fig/posterior-roseplot.png}
   \end{center}
   \caption{Posterior distribution under prior $\theta_0$: Left $\theta_0 = \pi/2$; Right: $\theta_0 = \pi$}\label{fig:posteriors}
 \end{figure}
@@ -314,7 +300,7 @@ As it relates to the principal manifolds framework, after treatment happens at $
 
 \subsection{The Manifold RD Estimator}
 
-It is common to estimate the causal effect, write $\hat{\tau}(t^*)$, using a weighting approach \textcolor{red}{cite these bad bois}. Units that are located closer to $t^*$ are weighted more, while units that are located further away are weighted less. This makes sense in the context of the identification assumption underlying the RD estimator, i.e. units close to the cutoff only differ in treatment assignment. Thus, treatment is considered quasi-random. 
+It is common to estimate the causal effect, write $\hat{\tau}(t^*)$, using a weighting approach. Units that are located closer to $t^*$ are weighted more, while units that are located further away are weighted less. This makes sense in the context of the identification assumption underlying the RD estimator, i.e. units close to the cutoff only differ in treatment assignment. Thus, treatment is considered quasi-random. 
 
 Our crux is to translate this weighting scheme into a topological setting. Intuitively, we want to achieve the following: For each additional unit we observe after the treatment has been administered, evaluate whether this observation is \textit{topologically similar} to our pre-treatment mean. If it is, we want to assign a larger weight to it. If it is not, we want to assign less weight to it. Remember that we formalized the notion of topological similarity using the curvature $\kappa|\theta_i$, i.e. for unit $i$, the curvature at the projection angle encodes its topological neighborhood. Thus, if some unit is embedded close to what we would expect from our pre-treatment data, we want to assign a lot of weight to it since it is topologically similar. 
 
