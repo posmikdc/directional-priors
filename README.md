@@ -43,7 +43,7 @@ The estimator generalizes traditional RD methods by integrating information abou
 
 Simulations on spherical manifolds demonstrate the estimator's ability to recover treatment effects while accounting for topological changes:
 
-![RD Simulation Results](fig/rd-sim.png)
+![RD Simulation Results](fig/rd_sim.png)
 
 ## Implementation
 All code necessary to reproduce the simulations and figures in this paper is available in this repository. The implementation includes:
