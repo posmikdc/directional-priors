@@ -46,12 +46,8 @@ Simulations on spherical manifolds demonstrate the estimator's ability to recove
 ![RD Simulation Results](fig/rd_sim.png)
 
 ## Implementation
-All code necessary to reproduce the simulations and figures in this paper is available in this repository. The implementation includes:
 
-- Functions for fitting manifolds to pre- and post-treatment data
-- Directional statistics utilities for von Mises distributions
-- Posterior computation for topological weights
-- Simulation framework for the Manifold RD estimator
+All code necessary to reproduce the simulations and figures in this paper is available in this repository.
 
 ## Contact
 Daniel C. Posmik  
